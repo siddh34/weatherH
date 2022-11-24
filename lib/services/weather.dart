@@ -4,6 +4,7 @@ import 'package:clima/services/networking.dart';
 class WeatherModel {
   var myLatitude;
   var myLongitude;
+  late String wallpaper;
 
   Future<dynamic> getCityLocation(String cityName) async {
     var url = 'https://api.openweathermap.org/data/2'
@@ -31,33 +32,46 @@ class WeatherModel {
 
   String getWeatherIcon(int condition) {
     if (condition < 300) {
+      wallpaper = "lightning.jpg";
       return '🌩';
     } else if (condition < 400) {
+      wallpaper = "location_background.jpg";
       return '🌧';
     } else if (condition < 600) {
+      wallpaper = "location_background.jpg";
       return '☔️';
     } else if (condition < 700) {
+      wallpaper = "Cold.jpg";
       return '☃️';
     } else if (condition < 800) {
+      wallpaper = "Relax.jpg";
       return '🌫';
     } else if (condition == 800) {
+      wallpaper = "warm.jpg";
       return '☀️';
     } else if (condition <= 804) {
+      wallpaper = "cloudy.jpg";
       return '☁️';
     } else {
+      wallpaper = "location_background.jpg";      
       return '🤷‍';
     }
   }
 
   String getMessage(int temp) {
-    if (temp > 25) {
-      return 'It\'s 🍦 time';
-    } else if (temp > 20) {
-      return 'Time for shorts and 👕';
-    } else if (temp < 10) {
-      return 'You\'ll need 🧣 and 🧤';
+    if (temp >= 25) {
+      return 'Its warm 🥵';
+    } else if (temp >= 20) {
+      return 'Relaxing time 😁';
+    } else if (temp <= 10) {
+      return 'Its freaking cold 🤧';
     } else {
-      return 'Bring a 🧥 just in case';
+      return '😑 weather';
     }
   }
+
+  String getWallpaper(){
+    return wallpaper.toString();
+  }
+
 }

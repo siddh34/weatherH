@@ -18,6 +18,7 @@ class _LocationScreenState extends State<LocationScreen> {
   var cityName;
   var weatherIcon;
   var msgDisplay;
+  late String wallpaper = 'images/location_background.jpg';
   WeatherModel weather = WeatherModel();
 
   @override
@@ -44,6 +45,7 @@ class _LocationScreenState extends State<LocationScreen> {
       cityName = weatherData['name'];
       weatherIcon = weather.getWeatherIcon(condition);
       msgDisplay = weather.getMessage(temp);
+      wallpaper = weather.getWallpaper();
       print(temp);
     });
   }
@@ -54,7 +56,7 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/location_background.jpg'),
+            image: AssetImage('images/$wallpaper'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
                 Colors.white.withOpacity(0.8), BlendMode.dstATop),

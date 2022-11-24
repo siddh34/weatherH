@@ -5,8 +5,8 @@ class location {
   late double longitude;
 
   void getPermission() async {
-    LocationPermission permission1 = await Geolocator.requestPermission();
-    LocationPermission permission = await Geolocator.checkPermission();
+    await Geolocator.requestPermission();
+    await Geolocator.checkPermission();
   }
 
   Future<void> getCurrentlocation() async {
