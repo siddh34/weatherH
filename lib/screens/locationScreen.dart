@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:clima/utlities/constants.dart';
 import 'package:clima/services/weather.dart';
@@ -117,12 +119,28 @@ class _LocationScreenState extends State<LocationScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(right: 10.0),
-                child: Text(
-                  '$msgDisplay in $cityName!',
-                  textAlign: TextAlign.center,
-                  style: kMessageTextStyle,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Icon(
+                        Icons.keyboard_double_arrow_right,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 10.0,left: 10.0),
+                        child: Text(
+                          '$msgDisplay in $cityName!',
+                          textAlign: TextAlign.center,
+                          style: kMessageTextStyle,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

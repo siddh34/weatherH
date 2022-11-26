@@ -64,7 +64,8 @@ class WeatherModel {
     } else if (temp >= 20) {
       return 'Relaxing time 😁';
     } else if (temp <= 10) {
-      return 'Its freaking cold 🤧';
+      wallpaper = "Cold.jpg";
+      return 'Its cold 🤧';
     } else {
       return '😑 weather';
     }
@@ -73,5 +74,4 @@ class WeatherModel {
   String getWallpaper(){
     return wallpaper.toString();
   }
-
 }
