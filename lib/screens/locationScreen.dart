@@ -20,6 +20,11 @@ class _LocationScreenState extends State<LocationScreen> {
   var cityName;
   var weatherIcon;
   var msgDisplay;
+  var feelsLike;
+  var pressure;
+  var humidity;
+  var windSpeed;
+  var visiblity;
   late String wallpaper = 'images/location_background.jpg';
   WeatherModel weather = WeatherModel();
 
@@ -45,6 +50,11 @@ class _LocationScreenState extends State<LocationScreen> {
       temp = temps.toInt();
       condition = weatherData['weather'][0]['id'];
       cityName = weatherData['name'];
+      humidity = weatherData['main']['humidity'];
+      feelsLike = weatherData['main']['feels_like'];
+      pressure = weatherData['main']['pressure'];
+      windSpeed = weatherData['wind']['speed'];
+      visiblity = weatherData['visibility'];
       weatherIcon = weather.getWeatherIcon(condition);
       msgDisplay = weather.getMessage(temp);
       wallpaper = weather.getWallpaper();
@@ -132,7 +142,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         Icons.keyboard_double_arrow_right,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(right: 10.0,left: 10.0),
+                        padding: EdgeInsets.only(right: 10.0, left: 10.0),
                         child: Text(
                           '$msgDisplay in $cityName!',
                           textAlign: TextAlign.center,
@@ -140,6 +150,64 @@ class _LocationScreenState extends State<LocationScreen> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              UnconstrainedBox(
+                child: Container(
+                  child: Material(
+                    child: Center(
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            children: [
+                              Icon(
+                                Icons.air_rounded,
+                              ),
+                              Text("Humidity : $humidity"),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Icon(
+                                Icons.electric_meter,
+                              ),
+                              Text("Pressure : $pressure"),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 60,
+                          ),
+                          Column(
+                            children: [
+                              Icon(
+                                Icons.wind_power,
+                              ),
+                              Text("Wind Speed : $windSpeed"),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Icon(
+                                Icons.panorama_fish_eye_sharp,
+                              ),
+                              Text("Visibility : $visiblity"),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    color: Colors.white12,
+                  ),
+                  width: 350,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(35, 255, 255, 255),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                 ),
               ),
