@@ -34,6 +34,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
     // print(widget.locationWeather);
     updateUI(widget.locationWeather);
+    print(weather.day5TempList());
   }
 
   void updateUI(dynamic weatherData) {

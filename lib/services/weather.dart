@@ -1,10 +1,12 @@
 import 'package:clima/services/location.dart';
 import 'package:clima/services/networking.dart';
+import 'package:clima/utlities/FiveDayRec.dart';
 
 class WeatherModel {
   var myLatitude;
   var myLongitude;
   late String wallpaper;
+  List<dynamic> temp = [];
 
   Future<dynamic> getCityLocation(String cityName) async {
     var url = 'https://api.openweathermap.org/data/2'
@@ -53,9 +55,39 @@ class WeatherModel {
       wallpaper = "cloudy.jpg";
       return '☁️';
     } else {
-      wallpaper = "location_background.jpg";      
+      wallpaper = "location_background.jpg";
       return '🤷‍';
     }
+  }
+
+  Future<List<dynamic>> day5TempList() async {
+    // getting location
+    location getLoc = location();
+    await getLoc.getCurrentlocation();
+    myLatitude = getLoc.latitude;
+    myLongitude = getLoc.longitude;
+
+    var myday5URL =
+        "http://api.openweathermap.org/data/2.5/forecast?lat=$myLatitude&lon=$myLongitude&appid=67c83c2980a8b84b1e620175281173fd&units=metric";
+
+    List<Record> displayRecords = [];
+
+    networkBuilder NB = networkBuilder(myday5URL);
+
+    dynamic jsonData = await NB.getMyData();
+
+    for (var data in jsonData['list'] as List) {
+      displayRecords.add(Record(
+          maxTemp: data['main']['temp_max'],
+          minTemp: data['main']['temp_min'],
+          feelsLike: data['main']['feels_like'],
+          weatherID: data['weather'][0]['id']));
+      temp.add(data['main']['temp']);
+    }
+
+    print(displayRecords);
+
+    return displayRecords;
   }
 
   String getMessage(int temp) {
@@ -71,7 +103,7 @@ class WeatherModel {
     }
   }
 
-  String getWallpaper(){
+  String getWallpaper() {
     return wallpaper.toString();
   }
 }
