@@ -85,11 +85,50 @@ class WeatherModel {
           weatherID: int.parse(data['weather'][0]['id'].toString()),
           dt: DateTime.parse(data['dt_txt'].toString()));
       displayRecords.add(rec);
+    }
 
-      // preparing temp list for graph
-      // temp.add(myTempData(
-      //     temp: data['main']['temp'],
-      //     time: DateTime.parse(data['dt_txt'].toString())));
+    // sorting the records
+    var currentDT = displayRecords[0].dt;
+
+    List<Record> newDisplayRecords = [];
+
+    // fetching five records
+    for (int i = 0; i < displayRecords.length; i++) {
+      if (currentDT.difference(displayRecords[i].dt).inHours == -24 ||
+          currentDT.difference(displayRecords[i].dt).inHours == -48 ||
+          currentDT.difference(displayRecords[i].dt).inHours == -72 ||
+          currentDT.difference(displayRecords[i].dt).inHours == -96) {
+        newDisplayRecords.add(displayRecords[i]);
+      }
+    }
+
+    return newDisplayRecords;
+  }
+
+  Future<List<dynamic>> Cityday5TempList(String city) async {
+    // getting location
+    location getLoc = location();
+    await getLoc.getCurrentlocation();
+    myLatitude = getLoc.latitude;
+    myLongitude = getLoc.longitude;
+    
+    var myday5URL =
+        "http://api.openweathermap.org/data/2.5/forecast?q=$city&appid=67c83c2980a8b84b1e620175281173fd&units=metric";
+
+    List<Record> displayRecords = [];
+
+    networkBuilder NB = networkBuilder(myday5URL);
+
+    dynamic jsonData = await NB.getMyData();
+
+    for (var data in jsonData['list'] as List) {
+      Record rec = Record(
+          maxTemp: double.parse(data['main']['temp_max'].toString()),
+          minTemp: double.parse(data['main']['temp_min'].toString()),
+          feelsLike: double.parse(data['main']['feels_like'].toString()),
+          weatherID: int.parse(data['weather'][0]['id'].toString()),
+          dt: DateTime.parse(data['dt_txt'].toString()));
+      displayRecords.add(rec);
     }
 
     // sorting the records
@@ -119,6 +158,37 @@ class WeatherModel {
 
     var myday5URL =
         "http://api.openweathermap.org/data/2.5/forecast?lat=$myLatitude&lon=$myLongitude&appid=67c83c2980a8b84b1e620175281173fd&units=metric";
+
+    networkBuilder NB = networkBuilder(myday5URL);
+
+    dynamic jsonData = await NB.getMyData();
+
+    int i = 0;
+    for (var data in jsonData['list'] as List) {
+      // preparing temp list for graph
+      if (i >= 11) {
+        break;
+      }
+      temp.add(myTempData(
+          temp: data['main']['temp'],
+          time: DateTime.parse(data['dt_txt'].toString())
+          )
+        );
+      i++;
+    }
+
+    return temp;
+  }
+
+  Future<List<dynamic>> CityTempList(String city) async {
+    // getting location
+    location getLoc = location();
+    await getLoc.getCurrentlocation();
+    myLatitude = getLoc.latitude;
+    myLongitude = getLoc.longitude;
+
+    var myday5URL =
+        "http://api.openweathermap.org/data/2.5/forecast?q=$city&appid=67c83c2980a8b84b1e620175281173fd&units=metric";
 
     networkBuilder NB = networkBuilder(myday5URL);
 

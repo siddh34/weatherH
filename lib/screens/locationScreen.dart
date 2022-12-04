@@ -74,6 +74,41 @@ class _LocationScreenState extends State<LocationScreen> {
     });
   }
 
+  CityLoadData(String city) async {
+    DisplayRec = await weather.Cityday5TempList(city) as List<Record>;
+    var tpl = await weather.CityTempList(city) as List<myTempData>;
+    setState(() {
+      for (int i = 0; i < DisplayRec.length; i++) {
+        tempRec = tpl;
+        double maxTemp = DisplayRec[i].maxTemp;
+        double minTemp = DisplayRec[i].minTemp;
+        double feelsLike = DisplayRec[i].feelsLike;
+        var icon = weather.getWeatherIcon(DisplayRec[i].weatherID);
+        var day = DisplayRec[i].dt.day.toString();
+        var Month = DisplayRec[i].dt.month.toString();
+        var year = DisplayRec[i].dt.year.toString();
+
+        var myText = Text(
+          '    \n \t $day-$Month-$year -> $icon  feels like: $feelsLike°\n\t\t minTemp: $minTemp° maxTemp: $maxTemp°',
+          textAlign: TextAlign.start,
+        );
+        display.add(myText);
+        // print(display);
+      }
+
+      // clearing the previous value
+      DisplayRec.clear();
+
+      for (int i = 0; i < 4; i++) {
+        display.removeAt(0);
+      }
+
+      for (int i = 0; i < 11; i++) {
+        tempRec.removeAt(0);
+      }
+    });
+  }
+
   void updateUI(dynamic weatherData) {
     setState(() {
       if (weatherData == null) {
@@ -138,10 +173,12 @@ class _LocationScreenState extends State<LocationScreen> {
                           MaterialPageRoute(builder: (context) {
                         return CityScreen();
                       }));
+                      // TODO: update the cityscreen path
                       if (typeName != null) {
                         var weatherData =
                             await weather.getCityLocation(typeName);
                         updateUI(weatherData);
+                        await CityLoadData(typeName);
                       }
                     },
                     child: Icon(
@@ -376,7 +413,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     color: Color.fromARGB(31, 128, 117, 117),
                   ),
                   width: 350,
-                  height: 265,
+                  height: 300,
                   decoration: BoxDecoration(
                     color: Color.fromARGB(35, 167, 150, 150),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
