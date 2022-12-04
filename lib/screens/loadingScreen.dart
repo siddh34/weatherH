@@ -18,8 +18,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void getlocationData() async {
     WeatherModel weatherModel = WeatherModel();
     var weatherData = await weatherModel.getLocationWeather();
+    var tList = await weatherModel.TempList();
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return LocationScreen(weatherData);
+      return LocationScreen(weatherData,tList);
     }));
   }
 
@@ -30,6 +31,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: SpinKitDoubleBounce(
           color: Colors.white,
           size: 100.00,
+          duration: const Duration(seconds: 4),
         ),
       ),
     );

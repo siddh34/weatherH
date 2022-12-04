@@ -1,8 +1,17 @@
 class Record {
-  late int maxTemp;
-  late int minTemp;
-  late int feelsLike;
-  late int weatherID;
+  double maxTemp;
+  double minTemp;
+  double feelsLike;
+  int weatherID;
+  DateTime  dt;
 
-  Record({required int maxTemp,required int minTemp,required int feelsLike, required int weatherID});
+  Record(
+      {
+      required this.maxTemp,
+      required this.minTemp,
+      required this.feelsLike,
+      required this.weatherID,
+      required this.dt
+      }
+    );
 }

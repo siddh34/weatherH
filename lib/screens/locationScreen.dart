@@ -1,13 +1,20 @@
 import 'dart:ui';
 
+import 'package:clima/utlities/FiveDayRec.dart';
+import 'package:clima/utlities/tempData.dart';
 import 'package:flutter/material.dart';
 import 'package:clima/utlities/constants.dart';
 import 'package:clima/services/weather.dart';
 import 'package:clima/screens/cityScreen.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class LocationScreen extends StatefulWidget {
+  var tempList;
+
   @override
-  LocationScreen(this.locationWeather);
+  LocationScreen(this.locationWeather, this.tempList);
 
   final locationWeather;
 
@@ -27,14 +34,44 @@ class _LocationScreenState extends State<LocationScreen> {
   var visiblity;
   late String wallpaper = 'images/location_background.jpg';
   WeatherModel weather = WeatherModel();
+  List<Record> DisplayRec = [];
+  List<myTempData> tempRec = [];
+  List<Text> display = [];
+  List<String> val = [];
 
   @override
   void initState() {
     super.initState();
 
-    // print(widget.locationWeather);
+    // getting required list
+    tempRec = widget.tempList;
     updateUI(widget.locationWeather);
-    print(weather.day5TempList());
+    LoadData();
+  }
+
+  // returns a list of record for 5 days
+  LoadData() async {
+    DisplayRec = await weather.day5TempList() as List<Record>;
+    var tpl = await weather.TempList() as List<myTempData>;
+    setState(() {
+      for (int i = 0; i < DisplayRec.length; i++) {
+        tempRec = tpl;
+        double maxTemp = DisplayRec[i].maxTemp;
+        double minTemp = DisplayRec[i].minTemp;
+        double feelsLike = DisplayRec[i].feelsLike;
+        var icon = weather.getWeatherIcon(DisplayRec[i].weatherID);
+        var day = DisplayRec[i].dt.day.toString();
+        var Month = DisplayRec[i].dt.month.toString();
+        var year = DisplayRec[i].dt.year.toString();
+
+        var myText = Text(
+          '    \n \t $day-$Month-$year -> $icon  feels like: $feelsLike°\n\t\t  minTemp: $minTemp° maxTemp: $maxTemp°',
+          textAlign: TextAlign.start,
+        );
+        display.add(myText);
+        // print(display);
+      }
+    });
   }
 
   void updateUI(dynamic weatherData) {
@@ -159,6 +196,119 @@ class _LocationScreenState extends State<LocationScreen> {
               ),
               UnconstrainedBox(
                 child: Container(
+                  child: LineChart(
+                    LineChartData(
+                      titlesData: FlTitlesData(
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              switch (value.toInt()) {
+                                case 1:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[0].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                case 5:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[1].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                case 8:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[1].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                case 10:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[2].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                case 15:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[3].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                case 20:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[4].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                case 24:
+                                  var t =
+                                      DateFormat.jm().format(tempRec[5].time);
+                                  return Text(
+                                    '$t',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                default:
+                                  return Text('');
+                              }
+                            },
+                            // interval: 3,
+                          ),
+                        ),
+                        rightTitles: AxisTitles(
+                          axisNameWidget: Text('Temperture'),
+                        ),
+                        topTitles: AxisTitles(
+                          axisNameWidget: Text('Time'),
+                        ),
+                      ),
+                      borderData: FlBorderData(
+                        show: false,
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: [
+                            FlSpot(1, tempRec[0].temp),
+                            FlSpot(4, tempRec[1].temp),
+                            FlSpot(8, tempRec[2].temp),
+                            FlSpot(12, tempRec[3].temp),
+                            FlSpot(16, tempRec[4].temp),
+                            FlSpot(20, tempRec[5].temp),
+                            FlSpot(24, tempRec[6].temp),
+                          ],
+                          isCurved: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                  width: 370,
+                  height: 350,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              UnconstrainedBox(
+                child: Container(
                   child: Material(
                     child: Center(
                       child: Row(
@@ -202,12 +352,33 @@ class _LocationScreenState extends State<LocationScreen> {
                         ],
                       ),
                     ),
-                    color: Colors.white12,
+                    color: Color.fromARGB(31, 128, 117, 117),
                   ),
                   width: 350,
                   height: 110,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(35, 255, 255, 255),
+                    color: Color.fromARGB(47, 167, 150, 150),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              UnconstrainedBox(
+                child: Container(
+                  child: Material(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: display,
+                    ),
+                    color: Color.fromARGB(31, 128, 117, 117),
+                  ),
+                  width: 350,
+                  height: 265,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(35, 167, 150, 150),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                 ),
