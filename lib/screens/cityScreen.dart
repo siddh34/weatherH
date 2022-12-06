@@ -47,7 +47,6 @@ class _CityScreenState extends State<CityScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  
                   Navigator.pop(context, cityNamee);
                 },
                 child: Text(

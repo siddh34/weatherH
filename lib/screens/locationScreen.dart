@@ -32,12 +32,18 @@ class _LocationScreenState extends State<LocationScreen> {
   var humidity;
   var windSpeed;
   var visiblity;
+  var sunrise;
+  var sunset;
   late String wallpaper = 'images/location_background.jpg';
   WeatherModel weather = WeatherModel();
   List<Record> DisplayRec = [];
   List<myTempData> tempRec = [];
   List<Text> display = [];
   List<String> val = [];
+  List<Color> gradient = [
+    Color.fromARGB(255, 27, 160, 205),
+    Color.fromARGB(221, 35, 188, 122)
+  ];
 
   @override
   void initState() {
@@ -87,7 +93,6 @@ class _LocationScreenState extends State<LocationScreen> {
         var day = DisplayRec[i].dt.day.toString();
         var Month = DisplayRec[i].dt.month.toString();
         var year = DisplayRec[i].dt.year.toString();
-
         var myText = Text(
           '    \n \t $day-$Month-$year -> $icon  feels like: $feelsLike°\n\t\t minTemp: $minTemp° maxTemp: $maxTemp°',
           textAlign: TextAlign.start,
@@ -128,9 +133,15 @@ class _LocationScreenState extends State<LocationScreen> {
       pressure = weatherData['main']['pressure'];
       windSpeed = weatherData['wind']['speed'];
       visiblity = weatherData['visibility'];
+      sunrise = weatherData['sys']['sunrise'];
+      sunset = weatherData['sys']['sunset'];
       weatherIcon = weather.getWeatherIcon(condition);
       msgDisplay = weather.getMessage(temp);
       wallpaper = weather.getWallpaper();
+
+      print(DateTime.tryParse(sunset.toString()+'z')?.toLocal());
+      print(DateTime.tryParse(sunrise.toString()+'z')?.toLocal());
+
       print(temp);
     });
   }
@@ -173,7 +184,6 @@ class _LocationScreenState extends State<LocationScreen> {
                           MaterialPageRoute(builder: (context) {
                         return CityScreen();
                       }));
-                      // TODO: update the cityscreen path
                       if (typeName != null) {
                         var weatherData =
                             await weather.getCityLocation(typeName);
@@ -239,6 +249,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
+                            reservedSize: 14,
                             getTitlesWidget: (value, meta) {
                               switch (value.toInt()) {
                                 case 1:
@@ -312,10 +323,27 @@ class _LocationScreenState extends State<LocationScreen> {
                           ),
                         ),
                         rightTitles: AxisTitles(
-                          axisNameWidget: Text('Temperture'),
+                          sideTitles: SideTitles(
+                            showTitles: false,
+                            reservedSize: 25,
+                          ),
                         ),
-                        topTitles: AxisTitles(
-                          axisNameWidget: Text('Time'),
+                        topTitles: AxisTitles(),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 65,
+                            interval: 1.7,
+                            getTitlesWidget: (yVal, meta) {
+                              var y = yVal.toStringAsFixed(2);
+                              return Text(
+                                '$y°',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                       borderData: FlBorderData(
@@ -324,21 +352,34 @@ class _LocationScreenState extends State<LocationScreen> {
                       lineBarsData: [
                         LineChartBarData(
                           spots: [
-                            FlSpot(1, tempRec[0].temp),
-                            FlSpot(4, tempRec[1].temp),
-                            FlSpot(8, tempRec[2].temp),
-                            FlSpot(12, tempRec[3].temp),
-                            FlSpot(16, tempRec[4].temp),
-                            FlSpot(20, tempRec[5].temp),
-                            FlSpot(24, tempRec[6].temp),
+                            FlSpot(1, tempRec[1].temp),
+                            FlSpot(4, tempRec[2].temp),
+                            FlSpot(8, tempRec[3].temp),
+                            FlSpot(12, tempRec[4].temp),
+                            FlSpot(16, tempRec[5].temp),
+                            FlSpot(20, tempRec[6].temp),
+                            FlSpot(24, tempRec[7].temp),
                           ],
                           isCurved: true,
+                          gradient: LinearGradient(
+                            colors: gradient
+                                .map((color) => color.withOpacity(0.8))
+                                .toList(),
+                          ),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            gradient: LinearGradient(
+                              colors: gradient
+                                  .map((color) => color.withOpacity(0.1))
+                                  .toList(),
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  width: 370,
-                  height: 350,
+                  width: 340,
+                  height: 430,
                 ),
               ),
               SizedBox(
@@ -419,6 +460,12 @@ class _LocationScreenState extends State<LocationScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                 ),
+              ),
+              UnconstrainedBox(
+                child: Container(
+
+                ),
+                
               ),
             ],
           ),
