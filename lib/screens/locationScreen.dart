@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:clima/utlities/constants.dart';
 import 'package:clima/services/weather.dart';
 import 'package:clima/screens/cityScreen.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
+
+import '../Widgets/day5PredList.dart';
+import '../Widgets/displayBox.dart';
+import '../Widgets/myGraph.dart';
 
 // ignore: must_be_immutable
 class LocationScreen extends StatefulWidget {
@@ -135,12 +137,13 @@ class _LocationScreenState extends State<LocationScreen> {
       visiblity = weatherData['visibility'];
       sunrise = weatherData['sys']['sunrise'];
       sunset = weatherData['sys']['sunset'];
+      // updateUI
       weatherIcon = weather.getWeatherIcon(condition);
       msgDisplay = weather.getMessage(temp);
       wallpaper = weather.getWallpaper();
 
-      print(DateTime.tryParse(sunset.toString()+'z')?.toLocal());
-      print(DateTime.tryParse(sunrise.toString()+'z')?.toLocal());
+      print(DateTime.tryParse(sunset.toString() + 'z')?.toLocal());
+      print(DateTime.tryParse(sunrise.toString() + 'z')?.toLocal());
 
       print(temp);
     });
@@ -161,8 +164,6 @@ class _LocationScreenState extends State<LocationScreen> {
         constraints: BoxConstraints.expand(),
         child: SafeArea(
           child: ListView(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,6 +173,18 @@ class _LocationScreenState extends State<LocationScreen> {
                       WeatherModel weatherModel = WeatherModel();
                       var weatherData = await weatherModel.getLocationWeather();
                       updateUI(weatherData);
+                      await LoadData();
+
+                      // clearing the previous value
+                      DisplayRec.clear();
+
+                      for (int i = 0; i < 4; i++) {
+                        display.removeAt(0);
+                      }
+
+                      for (int i = 0; i < 11; i++) {
+                        tempRec.removeAt(0);
+                      }
                     },
                     child: Icon(
                       Icons.near_me,
@@ -241,232 +254,15 @@ class _LocationScreenState extends State<LocationScreen> {
               SizedBox(
                 height: 20,
               ),
-              UnconstrainedBox(
-                child: Container(
-                  child: LineChart(
-                    LineChartData(
-                      titlesData: FlTitlesData(
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 14,
-                            getTitlesWidget: (value, meta) {
-                              switch (value.toInt()) {
-                                case 1:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[0].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                case 5:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[1].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                case 8:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[1].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                case 10:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[2].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                case 15:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[3].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                case 20:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[4].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                case 24:
-                                  var t =
-                                      DateFormat.jm().format(tempRec[5].time);
-                                  return Text(
-                                    '$t',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  );
-                                default:
-                                  return Text('');
-                              }
-                            },
-                            // interval: 3,
-                          ),
-                        ),
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: false,
-                            reservedSize: 25,
-                          ),
-                        ),
-                        topTitles: AxisTitles(),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 65,
-                            interval: 1.7,
-                            getTitlesWidget: (yVal, meta) {
-                              var y = yVal.toStringAsFixed(2);
-                              return Text(
-                                '$y°',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      borderData: FlBorderData(
-                        show: false,
-                      ),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: [
-                            FlSpot(1, tempRec[1].temp),
-                            FlSpot(4, tempRec[2].temp),
-                            FlSpot(8, tempRec[3].temp),
-                            FlSpot(12, tempRec[4].temp),
-                            FlSpot(16, tempRec[5].temp),
-                            FlSpot(20, tempRec[6].temp),
-                            FlSpot(24, tempRec[7].temp),
-                          ],
-                          isCurved: true,
-                          gradient: LinearGradient(
-                            colors: gradient
-                                .map((color) => color.withOpacity(0.8))
-                                .toList(),
-                          ),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            gradient: LinearGradient(
-                              colors: gradient
-                                  .map((color) => color.withOpacity(0.1))
-                                  .toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  width: 340,
-                  height: 430,
-                ),
-              ),
+              myGraph(tempRec: tempRec, gradient: gradient),
               SizedBox(
                 height: 20,
               ),
-              UnconstrainedBox(
-                child: Container(
-                  child: Material(
-                    child: Center(
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            children: [
-                              Icon(
-                                Icons.air_rounded,
-                              ),
-                              Text("Humidity : $humidity"),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                Icons.electric_meter,
-                              ),
-                              Text("Pressure : $pressure"),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 60,
-                          ),
-                          Column(
-                            children: [
-                              Icon(
-                                Icons.wind_power,
-                              ),
-                              Text("Wind Speed : $windSpeed"),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Icon(
-                                Icons.panorama_fish_eye_sharp,
-                              ),
-                              Text("Visibility : $visiblity"),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    color: Color.fromARGB(31, 128, 117, 117),
-                  ),
-                  width: 350,
-                  height: 110,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(47, 167, 150, 150),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-              ),
+              myDisplayBox(humidity: humidity, pressure: pressure, windSpeed: windSpeed, visiblity: visiblity),
               SizedBox(
                 height: 20,
               ),
-              UnconstrainedBox(
-                child: Container(
-                  child: Material(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: display,
-                    ),
-                    color: Color.fromARGB(31, 128, 117, 117),
-                  ),
-                  width: 350,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(35, 167, 150, 150),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-              ),
-              UnconstrainedBox(
-                child: Container(
-
-                ),
-                
-              ),
+              day5PredList(display: display),
             ],
           ),
         ),
@@ -474,3 +270,4 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
+

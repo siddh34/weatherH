@@ -71,6 +71,8 @@ flutter:
     - images/lightning.jpg
     - images/Relax.jpg
     - images/warm.jpg
+    - images/cloudy1.jpg
+    - images/sunny.jpg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

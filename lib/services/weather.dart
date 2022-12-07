@@ -9,6 +9,7 @@ class WeatherModel {
   late String wallpaper;
   List<myTempData> temp = [];
 
+  // on second screen it is used
   Future<dynamic> getCityLocation(String cityName) async {
     var url = 'https://api.openweathermap.org/data/2'
         '.5/weather?q=$cityName&appid=67c83c2980a8b84b1e620175281173fd&units=metric';
@@ -33,6 +34,7 @@ class WeatherModel {
     return weatherData;
   }
 
+  // changing wallpaper 
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       wallpaper = "lightning.jpg";
@@ -50,10 +52,10 @@ class WeatherModel {
       wallpaper = "Relax.jpg";
       return '🌫';
     } else if (condition == 800) {
-      wallpaper = "warm.jpg";
+      wallpaper = "sunny.jpg";
       return '☀️';
     } else if (condition <= 804) {
-      wallpaper = "cloudy.jpg";
+      wallpaper = "cloudy1.jpg";
       return '☁️';
     } else {
       wallpaper = "location_background.jpg";
@@ -61,6 +63,7 @@ class WeatherModel {
     }
   }
 
+  // 5 day rec (in future)
   Future<List<dynamic>> day5TempList() async {
     // getting location
     location getLoc = location();
