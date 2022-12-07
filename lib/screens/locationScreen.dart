@@ -174,14 +174,11 @@ class _LocationScreenState extends State<LocationScreen> {
                       var weatherData = await weatherModel.getLocationWeather();
                       updateUI(weatherData);
                       await LoadData();
-
                       // clearing the previous value
                       DisplayRec.clear();
-
                       for (int i = 0; i < 4; i++) {
                         display.removeAt(0);
                       }
-
                       for (int i = 0; i < 11; i++) {
                         tempRec.removeAt(0);
                       }

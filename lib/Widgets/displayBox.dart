@@ -30,32 +30,32 @@ class myDisplayBox extends StatelessWidget {
                     Icon(
                       Icons.air_rounded,
                     ),
-                    Text("Humidity : $humidity"),
+                    Text("Humidity: $humidity%"),
                     SizedBox(
                       height: 10,
                     ),
                     Icon(
                       Icons.electric_meter,
                     ),
-                    Text("Pressure : $pressure"),
+                    Text("Pressure: $pressure hPa"),
                   ],
                 ),
                 SizedBox(
-                  width: 60,
+                  width: 1,
                 ),
                 Column(
                   children: [
                     Icon(
                       Icons.wind_power,
                     ),
-                    Text("Wind Speed : $windSpeed"),
+                    Text("Wind Speed: $windSpeed m/s"),
                     SizedBox(
                       height: 10,
                     ),
                     Icon(
                       Icons.panorama_fish_eye_sharp,
                     ),
-                    Text("Visibility : $visiblity"),
+                    Text("Visibility: $visiblity m"),
                   ],
                 ),
               ],
